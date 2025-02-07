@@ -72,20 +72,15 @@ def weather_pipeline(city: str = "San Francisco"):
     generate_csv_report(df)
     return df
 
-
-def test_postgres_connection():
-  try:
-    conn_str = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
-    engine = create_engine(conn_str)
-    conn = engine.connect()
-    print("Connected to PostgreSQL successfully!")
-    conn.close()
-  except Exception as e:
-    print (f"Connection failed: {e}")
-
 if __name__ == "__main__":
-  raw_data = fetch_weather_data("San Francisco")
-  df = process_weather_data(raw_data)
-  save_to_postgres(df)
-  print("Processed Data:")
-  print(df)
+  weather_pipeline.serve(name="daily-weather-pipeline", cron="0 0 * * *", tags=["weather", "automation"])
+
+# def test_postgres_connection():
+#   try:
+#     conn_str = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
+#     engine = create_engine(conn_str)
+#     conn = engine.connect()
+#     print("Connected to PostgreSQL successfully!")
+#     conn.close()
+#   except Exception as e:
+#     print (f"Connection failed: {e}")
